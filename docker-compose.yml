@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  # Redis Container Config
+  redis_server:
+    image: redis:7-alpine
+    container_name: my_redis_container
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_storage:/data
+    restart: always
+
+  # Python App Container Config
+  python_app:
+    build: .
+    container_name: my_python_app
+    depends_on:
+      - redis_server  # Pehle Redis start hoga, phir Python App
+    environment:
+      - REDIS_HOST=redis_server  # Service name as hostname
+      - REDIS_PORT=6379
+
+volumes:
+  redis_storage:  # Volume lagaya taaki Redis ka data save rahe
